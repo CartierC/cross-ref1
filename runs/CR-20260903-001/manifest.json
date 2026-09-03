@@ -1,0 +1,17 @@
+{
+  "run_id": "CR-20260903-001",
+  "state": "PASSED",
+  "created_at": "2026-09-03T22:24:12.810217+00:00",
+  "updated_at": "2026-09-03T22:24:12.810239+00:00",
+  "providers": {
+    "stage1_provider": "agent-tool-isolated-context",
+    "stage1_model": "claude (fresh subagent, no conversation memory)",
+    "stage2_provider": "orchestrating-claude-session",
+    "stage2_model": "claude-sonnet-5"
+  },
+  "error": null,
+  "validation_summary": {
+    "passed": true,
+    "issues": []
+  }
+}
