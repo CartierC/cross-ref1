@@ -1,0 +1,35 @@
+{
+  "run_id": null,
+  "original_task": {
+    "objective": "Produce a 30-day AI automation consulting launch plan.",
+    "expected_result": "A plan that gets the operator to first paying revenue within 30 days.",
+    "constraints": [
+      "Must define a specific target customer",
+      "Must include a pricing structure",
+      "Must include an acquisition system",
+      "Must include a delivery system",
+      "Must include KPIs and risks"
+    ],
+    "requested_format": "Markdown plan with weekly milestones"
+  },
+  "source_context": {
+    "source_material": [
+      "Operator has 6 years of workflow-automation experience with Zapier and AWS.",
+      "Operator has no existing audience or email list."
+    ],
+    "facts": [
+      "Operator can commit roughly 20 hours/week to this launch."
+    ],
+    "references": [],
+    "attachments": []
+  },
+  "locked_decisions": [
+    "Positioning is AI automation consulting, not a SaaS product.",
+    "First revenue mechanism must not depend on paid ads."
+  ],
+  "primary_output": {
+    "platform": "Platform1",
+    "model": "unspecified",
+    "content": "Week 1: Build a brand and logo. Week 2: Launch a website and social media presence. Week 3: Post content consistently to grow an audience. Week 4: Start reaching out to potential clients. Focus on building a strong brand identity that will carry the business long-term. Consider your color palette and tone of voice carefully."
+  }
+}

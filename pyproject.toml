@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cross-reference-agent"
+version = "1.1.0"
+description = "Cross Reference Agent: Independent Creator + Comparative Auditor + Canonical Synthesizer"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.5",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.34"]
+openai = ["openai>=1.40"]
+gemini = ["google-generativeai>=0.7"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+crossref = "crossref.runner:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+crossref = ["prompts/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

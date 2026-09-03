@@ -1,0 +1,10 @@
+pydantic>=2.5
+python-dotenv>=1.0
+
+# optional, install whichever providers you actually use
+anthropic>=0.34
+openai>=1.40
+google-generativeai>=0.7
+
+# dev/test
+pytest>=8.0
