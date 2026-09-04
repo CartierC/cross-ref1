@@ -20,8 +20,9 @@ crossref() {
     return 1
   fi
 
-  local input_dir repo_root
+  local input_dir input_abs repo_root
   input_dir="$(cd "$(dirname "$input_file")" && pwd)"
+  input_abs="$input_dir/$(basename "$input_file")"
   repo_root="$(git -C "$input_dir" rev-parse --show-toplevel 2>/dev/null)"
   if [[ -z "$repo_root" ]]; then
     echo "crossref: could not locate the cross-ref1 repo root from $input_file" >&2
@@ -34,8 +35,12 @@ crossref() {
       source ".venv/bin/activate"
     fi
 
+    # Use the pre-resolved absolute path, not the original (possibly
+    # relative) $input_file -- relative paths would otherwise be
+    # re-resolved against $repo_root after the `cd` above instead of the
+    # caller's original working directory.
     local run_output
-    run_output="$(python -m crossref.runner run --input "$input_file" --provider anthropic --model claude-sonnet-5)"
+    run_output="$(python -m crossref.runner run --input "$input_abs" --provider anthropic --model claude-sonnet-5)"
     local status=$?
     echo "$run_output"
 
