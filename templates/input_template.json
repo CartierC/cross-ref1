@@ -1,0 +1,20 @@
+{
+  "original_task": {
+    "objective": "",
+    "expected_result": "",
+    "constraints": [],
+    "requested_format": ""
+  },
+  "source_context": {
+    "source_material": [],
+    "facts": [],
+    "references": [],
+    "attachments": []
+  },
+  "locked_decisions": [],
+  "primary_output": {
+    "platform": "",
+    "model": "",
+    "content": ""
+  }
+}
