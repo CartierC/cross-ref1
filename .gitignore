@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 .env
 runs/CR-*
+runs_input/*.json

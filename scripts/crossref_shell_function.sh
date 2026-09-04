@@ -39,18 +39,30 @@ crossref() {
     local status=$?
     echo "$run_output"
 
-    local run_id
+    local run_id run_state
     run_id="$(printf '%s\n' "$run_output" | sed -n 's/^run_id=\([^ ]*\) .*/\1/p')"
+    run_state="$(printf '%s\n' "$run_output" | sed -n 's/.*state=\([^ ]*\).*/\1/p')"
 
     if [[ -z "$run_id" ]]; then
       echo "crossref: run failed before a run_id was assigned; see output above." >&2
       exit "$status"
     fi
 
+    # Only auto-open on a confirmed PASSED run (status 0). canonical.md can
+    # exist on disk even when the run ultimately failed (schema synthesis
+    # succeeded but a later guardrail check failed) or belong to a stale
+    # prior attempt -- never open it in that case, since a silently-opened
+    # failed/older result is worse than no auto-open at all.
+    if [[ "$status" -ne 0 ]]; then
+      echo "crossref: run_id=$run_id finished with state=${run_state:-UNKNOWN} (not PASSED) -- not opening canonical.md." >&2
+      echo "crossref: inspect runs/$run_id/manifest.json and runs/$run_id/validation.json for details." >&2
+      exit "$status"
+    fi
+
     local canonical="$repo_root/runs/$run_id/canonical.md"
     if [[ ! -f "$canonical" ]]; then
-      echo "crossref: run_id=$run_id but canonical.md not found at $canonical" >&2
-      exit "$status"
+      echo "crossref: run_id=$run_id reported PASSED but canonical.md not found at $canonical" >&2
+      exit 1
     fi
 
     if command -v open >/dev/null 2>&1; then

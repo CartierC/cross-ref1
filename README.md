@@ -15,7 +15,8 @@ Output" (from any Platform 1), this agent:
    either input alone — not a concatenation, not a compromise.
 
 See `ARCHITECTURE.md` for how the information barrier between Stage 1 and
-Stage 2 is enforced structurally, and `DEPLOYMENT.md` for setup and usage.
+Stage 2 is enforced structurally, `DEPLOYMENT.md` for setup and usage, and
+`docs/DAILY_USE.md` for the local `crossref` shell-function workflow.
 
 ## Quick start
 
