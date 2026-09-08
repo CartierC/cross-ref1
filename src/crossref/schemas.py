@@ -68,6 +68,7 @@ class RunInput(BaseModel):
     """
 
     run_id: Optional[str] = None
+    topic: Optional[str] = None
     original_task: OriginalTask
     source_context: SourceContext = Field(default_factory=SourceContext)
     locked_decisions: list[str] = Field(default_factory=list)
@@ -239,6 +240,10 @@ class ManifestProviderInfo(BaseModel):
 
 class RunManifest(BaseModel):
     run_id: str
+    topic: Optional[str] = None
+    source_input: Optional[str] = None
+    output_directory: Optional[str] = None
+    canonical_path: Optional[str] = None
     state: ManifestState = ManifestState.RUNNING
     created_at: str = Field(default_factory=utcnow_iso)
     updated_at: str = Field(default_factory=utcnow_iso)

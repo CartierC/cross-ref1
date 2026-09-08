@@ -4,4 +4,18 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .env
-runs/CR-*
+
+# Per-run artifacts are local/runtime output, not versioned. (Existing
+# committed runs, such as runs/CR-20260903-001/, predate this rule and
+# stay tracked — .gitignore never untracks already-committed files.)
+runs/*
+!runs/.gitkeep
+
+# Local scratch inputs filled in before a run; not versioned.
+runs_input/*
+!runs_input/.gitkeep
+
+# Convenience pointer to the newest PASSED canonical result. Regenerated
+# by every successful run, so it's local/runtime output too.
+latest/*
+!latest/.gitkeep

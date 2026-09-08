@@ -34,9 +34,13 @@ end-to-end orchestrator suites to pass (17 tests as of this writing).
 
 ## Execute a real run
 
-1. Write a `RunInput` JSON file (see `tests/fixtures/sample_run.json` for
-   the shape: `original_task`, `source_context`, `locked_decisions`,
-   `primary_output`).
+For the day-to-day COPY → FILL → RUN workflow, see `docs/DAILY_USE.md`.
+The mechanics:
+
+1. Write a `RunInput` JSON file (see `templates/input_template.json` for the
+   blank shape, or `tests/fixtures/sample_run.json` for a filled example:
+   `original_task`, `source_context`, `locked_decisions`, `primary_output`,
+   plus an optional `topic` used to name the run directory).
 2. Run:
 
 ```bash
@@ -49,18 +53,25 @@ python -m crossref.runner run \
 Use `--stage1-provider`/`--stage1-model` and
 `--stage2-provider`/`--stage2-model` to mix providers across stages (e.g.
 Claude for Stage 1, GPT for Stage 2) instead of `--provider`/`--model` for
-both.
+both. Pass `--no-open` to skip auto-opening the canonical result on a
+PASSED run (useful in CI/headless environments).
 
-3. Inspect `runs/<RUN_ID>/`:
-   - `input.json` — the exact `RunInput` that was run.
+3. Inspect `runs/<timestamp>_<topic>__<run_id>/` (a fresh, uniquely named
+   directory every run — see `docs/DAILY_USE.md` for the naming scheme):
+   - `input.json` — a snapshot of the exact `RunInput` that was run.
    - `independent.json` — Independent Output B, locked.
    - `result.json` — full Stage 2 structured output (scorecards, findings,
      synthesis decisions, canonical output, residual uncertainties).
    - `canonical.md` — Canonical Output C alone, for quick reading.
    - `validation.json` — guardrail check results.
    - `manifest.json` — run state (`RUNNING` / `PASSED` /
-     `FAILED_VALIDATION` / `FAILED_RUNTIME`) and provider/model metadata.
+     `FAILED_VALIDATION` / `FAILED_RUNTIME`), provider/model metadata, and
+     traceability fields (`topic`, `source_input`, `output_directory`,
+     `canonical_path`).
 
+On a `PASSED` run, `latest/canonical.md` is refreshed to that run's
+canonical output and the run's own `canonical.md` is opened automatically.
+A failed run leaves `latest/canonical.md` untouched and opens nothing.
 Exit code is `0` on `PASSED`, `1` otherwise.
 
 ## Adding a provider

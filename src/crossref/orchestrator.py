@@ -19,7 +19,16 @@ from .schemas import (
     RunInput,
     RunManifest,
 )
-from .storage import DEFAULT_RUNS_ROOT, next_run_id, run_dir, write_json, write_text
+from .storage import (
+    DEFAULT_LATEST_ROOT,
+    DEFAULT_RUNS_ROOT,
+    build_run_dir_name,
+    derive_topic,
+    next_run_id,
+    run_dir,
+    write_json,
+    write_text,
+)
 from .validation import validate_run
 
 
@@ -34,12 +43,19 @@ def run(
     stage1_provider: Provider,
     stage2_provider: Provider,
     runs_root: Path = DEFAULT_RUNS_ROOT,
+    latest_root: Path = DEFAULT_LATEST_ROOT,
+    source_input_path: Path | None = None,
 ) -> tuple[str, RunManifest]:
     run_id = run_input.run_id or next_run_id(runs_root)
-    out_dir = run_dir(run_id, runs_root)
+    topic = derive_topic(run_input, source_input_path)
+    dir_name = build_run_dir_name(topic, run_id)
+    out_dir = run_dir(dir_name, runs_root)
 
     manifest = RunManifest(
         run_id=run_id,
+        topic=topic,
+        source_input=str(source_input_path) if source_input_path else None,
+        output_directory=str(out_dir),
         state=ManifestState.RUNNING,
         providers=ManifestProviderInfo(
             stage1_provider=stage1_provider.name,
@@ -60,7 +76,9 @@ def run(
         # --- Stage 2: audit + synthesis, primary_output revealed now ---
         result = run_audit_pass(run_input, independent, stage2_provider)
         write_json(out_dir / "result.json", result.model_dump(mode="json"))
-        write_text(out_dir / "canonical.md", result.canonical_output)
+        canonical_path = out_dir / "canonical.md"
+        write_text(canonical_path, result.canonical_output)
+        manifest.canonical_path = str(canonical_path)
 
     except ProviderError as exc:
         manifest.state = ManifestState.FAILED_RUNTIME
@@ -78,6 +96,12 @@ def run(
     manifest.validation_summary = report.to_dict()
 
     manifest.state = ManifestState.PASSED if not report.has_failures else ManifestState.FAILED_VALIDATION
+
+    # latest/canonical.md must only ever reflect a confirmed PASSED run — a
+    # failed/invalid run must never overwrite the last good result.
+    if manifest.state == ManifestState.PASSED:
+        write_text(latest_root / "canonical.md", result.canonical_output)
+
     _finalize(out_dir, manifest)
     return run_id, manifest
 

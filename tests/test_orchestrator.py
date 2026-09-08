@@ -69,7 +69,8 @@ def test_full_run_passes_with_valid_providers(tmp_path):
     run_id, manifest = run(run_input, stage1, stage2, runs_root=tmp_path)
 
     assert manifest.state == ManifestState.PASSED
-    out_dir = tmp_path / run_id
+    out_dir = Path(manifest.output_directory)
+    assert out_dir.parent == tmp_path
     assert (out_dir / "input.json").exists()
     assert (out_dir / "independent.json").exists()
     assert (out_dir / "result.json").exists()

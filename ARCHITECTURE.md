@@ -79,7 +79,7 @@ RunInput (input.json)
 | `audit_pass.py` | Stage 2: renders the full comparison prompt, calls provider, parses/validates the JSON response into `CrossReferenceResult`. |
 | `validation.py` | Post-hoc guardrail checks (anchoring symptom, scope drift, concatenation, missing traceability). |
 | `orchestrator.py` | Runs Stage 1 → Stage 2 → validation, persists artifacts, drives the `RunManifest` state machine. |
-| `storage.py` | `RUN_ID` generation (`CR-YYYYMMDD-XXX`), run-directory layout, JSON/text IO. |
+| `storage.py` | `RUN_ID` generation (`CR-YYYYMMDD-XXX`), topic derivation/sanitization, per-run directory naming (`<timestamp>_<topic>__<run_id>`), JSON/text IO. |
 | `runner.py` | CLI (`python -m crossref.runner run --input ...`). |
 
 ## Run manifest states
@@ -90,6 +90,12 @@ RunInput (input.json)
 - `FAILED_VALIDATION` — Stage 2 response failed schema validation, or a
   post-hoc guardrail check failed (e.g. anchoring suspected).
 - `FAILED_RUNTIME` — a provider call exhausted its retry budget.
+
+`orchestrator.run()` only copies the run's `canonical.md` to
+`latest/canonical.md` when the manifest lands on `PASSED` — any other
+terminal state leaves `latest/canonical.md` exactly as it was. This is a
+one-way gate, not a rollback: `latest/` always reflects the most recent
+*PASSED* run, never the most recent run.
 
 ## Rubric and severity
 

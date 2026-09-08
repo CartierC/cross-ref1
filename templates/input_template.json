@@ -1,0 +1,22 @@
+{
+  "run_id": null,
+  "topic": null,
+  "original_task": {
+    "objective": "FILL IN: the outcome you want this run to produce",
+    "expected_result": "FILL IN: what a successful result looks like",
+    "constraints": [],
+    "requested_format": null
+  },
+  "source_context": {
+    "source_material": [],
+    "facts": [],
+    "references": [],
+    "attachments": []
+  },
+  "locked_decisions": [],
+  "primary_output": {
+    "platform": "FILL IN: e.g. ChatGPT, Gemini",
+    "model": null,
+    "content": "FILL IN: paste Primary Output A here, verbatim"
+  }
+}
